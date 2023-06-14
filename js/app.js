@@ -14,10 +14,10 @@ let winner // null = no winner; 1 or -1 winner; 'T' = Tied game
 /*----- cached elements  -----*/
 const messageEl = document.querySelector('h1')
 const playAgainBtnEl = document.querySelector('button')
-const markerEls = document.querySelectorAll('#markers > div')
+const markerEls = [...document.querySelectorAll('#markers > div')]
 
 /*----- event listeners -----*/
-
+document.getElementById('markers').addEventListener('click', handleDrop)
 /*----- functions -----*/
 init()
 
@@ -38,6 +38,27 @@ function init() {
   winner = null
   render()
 }
+
+// In response to user interaction, update all impacted
+// state, then call render()
+function handleDrop(evt) {
+  const colIdx = markerEls.indexOf(evt.target)
+  // Guard...
+  if (colIdx === -1) return
+  // Shortcut to the column array
+  const colArr = board[colIdx]
+  // Find the index of the first 0 in colArr
+  const rowIdx = colArr.indexOf(0)
+  // Update the board state with the current player value (turn)
+  colArr[rowIdx] = turn
+  // Switch player turn
+  turn *= -1
+  // Check for winner
+  winner = getWinner()
+  render()
+}
+
+function getWinner() {}
 
 // Visualize all state in the DOM
 function render() {
